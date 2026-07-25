@@ -457,6 +457,9 @@ function HistoryView({ onEditTx }) {
 --------------------------------------------------------- */
 function ReportsView({ monthYm, setMonthYm }) {
   const { transactions, categories } = useData();
+  const [expandedCategoryId, setExpandedCategoryId] = useState(null);
+  const [selectedTrendYm, setSelectedTrendYm] = useState(monthYm);
+  useEffect(() => { setSelectedTrendYm(monthYm); }, [monthYm]);
 
   const monthTx = useMemo(() => transactions.filter((t) => ymOf(t.date) === monthYm), [transactions, monthYm]);
   const expenseByCategory = useMemo(() => {
@@ -470,6 +473,24 @@ function ReportsView({ monthYm, setMonthYm }) {
   }, [monthTx, categories]);
   const expenseTotal = expenseByCategory.reduce((a, s) => a + s.value, 0);
 
+  const subBreakdown = useMemo(() => {
+    if (!expandedCategoryId) return null;
+    const cat = getCategoryById(categories, expandedCategoryId);
+    const map = new Map();
+    monthTx.filter((t) => t.type === 'expense' && t.majorCategoryId === expandedCategoryId).forEach((t) => {
+      const key = t.subCategoryId || '__none__';
+      map.set(key, (map.get(key) || 0) + t.amount);
+    });
+    const total = Array.from(map.values()).reduce((a, b) => a + b, 0);
+    const rows = Array.from(map.entries()).map(([subId, value]) => ({
+      subId,
+      name: subId === '__none__' ? '小分類なし' : (getSubName(cat, subId) || '小分類なし'),
+      value,
+      pct: total > 0 ? Math.round((value / total) * 100) : 0,
+    })).sort((a, b) => b.value - a.value);
+    return { cat, total, rows };
+  }, [expandedCategoryId, monthTx, categories]);
+
   const last6 = useMemo(() => {
     const arr = [];
     for (let i = 5; i >= 0; i--) arr.push(addMonths(monthYm, -i));
@@ -482,6 +503,11 @@ function ReportsView({ monthYm, setMonthYm }) {
   }, [transactions, monthYm]);
   const maxVal = Math.max(1, ...last6.map((m) => Math.max(m.inc, m.exp)));
   const sixMonthNet = last6.reduce((a, m) => a + (m.inc - m.exp), 0);
+  const selectedTrendMonth = last6.find((m) => m.ym === selectedTrendYm) || last6[last6.length - 1];
+  function barHeightPct(value) {
+    if (value <= 0) return 0;
+    return Math.max(4, (value / maxVal) * 100);
+  }
 
   const lastMonthYm = addMonths(monthYm, -1);
   const lastYearYm = addMonths(monthYm, -12);
@@ -505,13 +531,39 @@ function ReportsView({ monthYm, setMonthYm }) {
           <div className="donut-wrap">
             <DonutChart segments={expenseByCategory.map((s) => ({ value: s.value, color: s.cat.color }))} />
             <div className="donut-legend">
-              {expenseByCategory.slice(0, 6).map((s) => (
-                <div className="legend-row" key={s.cat.id}>
-                  <span className="legend-dot" style={{ background: s.cat.color }}></span>
-                  <span className="legend-name">{s.cat.icon} {s.cat.name}</span>
-                  <span className="legend-pct">{Math.round((s.value / expenseTotal) * 100)}%</span>
-                </div>
-              ))}
+              {expenseByCategory.slice(0, 6).map((s) => {
+                const isOpen = expandedCategoryId === s.cat.id;
+                return (
+                  <React.Fragment key={s.cat.id}>
+                    <button
+                      type="button"
+                      className={cx('legend-row', 'clickable', isOpen && 'expanded')}
+                      onClick={() => setExpandedCategoryId(isOpen ? null : s.cat.id)}
+                    >
+                      <span className="legend-dot" style={{ background: s.cat.color }}></span>
+                      <span className="legend-name">{s.cat.icon} {s.cat.name}</span>
+                      <span className="legend-pct">{Math.round((s.value / expenseTotal) * 100)}%</span>
+                      <span className="legend-caret">{isOpen ? '▲' : '▼'}</span>
+                    </button>
+                    {isOpen && subBreakdown && (
+                      subBreakdown.rows.length === 0 ? (
+                        <div className="sub-breakdown-empty">小分類ごとの記録がありません</div>
+                      ) : (
+                        <div className="sub-breakdown">
+                          {subBreakdown.rows.map((r) => (
+                            <div className="sub-breakdown-row" key={r.subId}>
+                              <span className="sub-name">{r.name}</span>
+                              <span className="sub-bar-track"><span className="sub-bar-fill" style={{ width: r.pct + '%', background: s.cat.color }}></span></span>
+                              <span className="sub-amount">{formatYen(r.value)}</span>
+                              <span className="sub-pct">{r.pct}%</span>
+                            </div>
+                          ))}
+                        </div>
+                      )
+                    )}
+                  </React.Fragment>
+                );
+              })}
             </div>
           </div>
         )}
@@ -521,23 +573,28 @@ function ReportsView({ monthYm, setMonthYm }) {
         <div className="card-title"><span>月ごとの推移（過去6ヶ月）</span></div>
         <div className="bar-chart">
           {last6.map((m) => (
-            <div className="bar-col" key={m.ym}>
+            <button type="button" key={m.ym} className={cx('bar-col', selectedTrendYm === m.ym && 'selected')} onClick={() => setSelectedTrendYm(m.ym)}>
               <div style={{ display: 'flex', gap: 3, alignItems: 'flex-end', height: '100%' }}>
                 <div className="bar-shape" style={{ height: '100%' }}>
-                  <div className="fill-income" style={{ height: (m.inc / maxVal) * 100 + '%' }}></div>
+                  <div className="fill-income" style={{ height: barHeightPct(m.inc) + '%' }}></div>
                 </div>
                 <div className="bar-shape" style={{ height: '100%' }}>
-                  <div className="fill-expense" style={{ height: (m.exp / maxVal) * 100 + '%' }}></div>
+                  <div className="fill-expense" style={{ height: barHeightPct(m.exp) + '%' }}></div>
                 </div>
               </div>
               <div className="bar-label">{formatYmShort(m.ym)}</div>
-            </div>
+            </button>
           ))}
         </div>
         <div style={{ display: 'flex', gap: 14, justifyContent: 'center', marginTop: 10, fontSize: 12, color: 'var(--color-text-muted)', fontWeight: 700 }}>
           <span><span style={{ color: 'var(--color-income)' }}>■</span> 収入</span>
           <span><span style={{ color: 'var(--color-expense)' }}>■</span> 支出</span>
         </div>
+        {selectedTrendMonth && (
+          <div className="trend-detail">
+            {formatYmLabel(selectedTrendMonth.ym)}：収入 <b>{formatYen(selectedTrendMonth.inc)}</b> ・ 支出 <b>{formatYen(selectedTrendMonth.exp)}</b>
+          </div>
+        )}
       </div>
 
       <div className="card">
