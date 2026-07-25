@@ -150,6 +150,11 @@ a { color: inherit; }
 }
 .month-switcher button:active { transform: scale(0.9); }
 .month-switcher button:disabled { opacity: 0.35; }
+.today-jump-row { text-align: center; margin: -10px 0 16px; }
+.today-jump-row button {
+  border: none; background: none; color: var(--color-primary-dark);
+  font-size: 12.5px; font-weight: 700; padding: 4px 10px;
+}
 
 /* ---------- カード共通 ---------- */
 .card {
@@ -652,25 +657,33 @@ textarea.text-input { resize: none; min-height: 64px; }
 .list-item-card .amount { font-weight: 800; font-variant-numeric: tabular-nums; }
 
 /* ---------- 分析画面 ---------- */
-.donut-wrap { display: flex; align-items: center; gap: 18px; }
+.donut-wrap { display: flex; align-items: center; gap: 14px; min-width: 0; }
+.donut-wrap svg { flex-shrink: 0; }
 .donut-legend { flex: 1; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
-.legend-row { display: flex; align-items: center; gap: 8px; font-size: 12.5px; padding: 7px 4px; border-radius: var(--radius-sm); border: none; background: none; width: 100%; text-align: left; color: var(--color-text); }
+.legend-row { display: flex; align-items: center; gap: 6px; font-size: 12.5px; padding: 7px 4px; border-radius: var(--radius-sm); border: none; background: none; width: 100%; min-width: 0; text-align: left; color: var(--color-text); }
 .legend-row.clickable { cursor: pointer; }
 .legend-row.clickable:active { background: var(--color-surface-alt); }
 .legend-row.expanded { background: var(--color-surface-alt); }
 .legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
-.legend-name { flex: 1; font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.legend-pct { color: var(--color-text-muted); font-variant-numeric: tabular-nums; }
-.legend-caret { color: var(--color-text-faint); font-size: 10px; }
+.legend-name { flex: 1; min-width: 0; font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.legend-pct { flex-shrink: 0; color: var(--color-text-muted); font-variant-numeric: tabular-nums; }
+.legend-caret { flex-shrink: 0; color: var(--color-text-faint); font-size: 10px; }
 
-.sub-breakdown { padding: 2px 4px 10px 26px; display: flex; flex-direction: column; gap: 8px; }
-.sub-breakdown-empty { padding: 4px 4px 10px 26px; font-size: 12px; color: var(--color-text-muted); }
-.sub-breakdown-row { display: flex; align-items: center; gap: 8px; font-size: 11.5px; }
-.sub-breakdown-row .sub-name { width: 74px; flex-shrink: 0; color: var(--color-text-muted); font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.sub-bar-track { flex: 1; height: 7px; border-radius: var(--radius-pill); background: var(--color-border); overflow: hidden; }
+.sub-breakdown { padding: 2px 4px 10px 22px; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.sub-breakdown-empty { padding: 4px 4px 10px 22px; font-size: 12px; color: var(--color-text-muted); }
+.sub-breakdown-row { min-width: 0; }
+.sub-breakdown-row .sub-row-top {
+  display: flex; justify-content: space-between; align-items: baseline; gap: 8px;
+  font-size: 11.5px; margin-bottom: 5px;
+}
+.sub-breakdown-row .sub-name {
+  color: var(--color-text-muted); font-weight: 700; min-width: 0;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.sub-breakdown-row .sub-amount-pct { flex-shrink: 0; color: var(--color-text-muted); font-variant-numeric: tabular-nums; }
+.sub-breakdown-row .sub-amount-pct b { color: var(--color-text); font-weight: 800; }
+.sub-bar-track { height: 6px; border-radius: var(--radius-pill); background: var(--color-border); overflow: hidden; }
 .sub-bar-fill { display: block; height: 100%; border-radius: var(--radius-pill); }
-.sub-breakdown-row .sub-amount { flex-shrink: 0; font-weight: 700; font-variant-numeric: tabular-nums; }
-.sub-breakdown-row .sub-pct { flex-shrink: 0; width: 30px; text-align: right; color: var(--color-text-muted); }
 
 .bar-chart { display: flex; align-items: flex-end; gap: 8px; height: 150px; padding-top: 10px; }
 .bar-chart .bar-col { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; gap: 4px; border: none; background: none; padding: 0; border-radius: var(--radius-sm); }

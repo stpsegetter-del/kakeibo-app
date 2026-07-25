@@ -99,11 +99,19 @@ function IconBtn({ children, onClick, label }) {
 
 function MonthSwitcher({ ym, onChange, max }) {
   const disabledNext = max ? ym >= max : false;
+  const isCurrent = !max || ym === max;
   return (
-    <div className="month-switcher">
-      <button onClick={() => onChange(addMonths(ym, -1))} aria-label="前の月">‹</button>
-      <div className="month-label">{formatYmLabel(ym)}</div>
-      <button onClick={() => onChange(addMonths(ym, 1))} disabled={disabledNext} aria-label="次の月">›</button>
+    <div>
+      <div className="month-switcher">
+        <button onClick={() => onChange(addMonths(ym, -1))} aria-label="前の月">‹</button>
+        <div className="month-label">{formatYmLabel(ym)}</div>
+        <button onClick={() => onChange(addMonths(ym, 1))} disabled={disabledNext} aria-label="次の月">›</button>
+      </div>
+      {!isCurrent && (
+        <div className="today-jump-row">
+          <button type="button" onClick={() => onChange(max)}>▸ 今月の表示に戻る</button>
+        </div>
+      )}
     </div>
   );
 }
@@ -529,7 +537,7 @@ function ReportsView({ monthYm, setMonthYm }) {
           <div className="budget-empty-hint">この月の支出データがありません</div>
         ) : (
           <div className="donut-wrap">
-            <DonutChart segments={expenseByCategory.map((s) => ({ value: s.value, color: s.cat.color }))} />
+            <DonutChart segments={expenseByCategory.map((s) => ({ value: s.value, color: s.cat.color }))} size={112} thickness={18} />
             <div className="donut-legend">
               {expenseByCategory.slice(0, 6).map((s) => {
                 const isOpen = expandedCategoryId === s.cat.id;
@@ -552,10 +560,11 @@ function ReportsView({ monthYm, setMonthYm }) {
                         <div className="sub-breakdown">
                           {subBreakdown.rows.map((r) => (
                             <div className="sub-breakdown-row" key={r.subId}>
-                              <span className="sub-name">{r.name}</span>
-                              <span className="sub-bar-track"><span className="sub-bar-fill" style={{ width: r.pct + '%', background: s.cat.color }}></span></span>
-                              <span className="sub-amount">{formatYen(r.value)}</span>
-                              <span className="sub-pct">{r.pct}%</span>
+                              <div className="sub-row-top">
+                                <span className="sub-name">{r.name}</span>
+                                <span className="sub-amount-pct"><b>{formatYen(r.value)}</b> ・ {r.pct}%</span>
+                              </div>
+                              <div className="sub-bar-track"><span className="sub-bar-fill" style={{ width: r.pct + '%', background: s.cat.color }}></span></div>
                             </div>
                           ))}
                         </div>
