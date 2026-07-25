@@ -560,11 +560,9 @@ function ReportsView({ monthYm, setMonthYm }) {
                         <div className="sub-breakdown">
                           {subBreakdown.rows.map((r) => (
                             <div className="sub-breakdown-row" key={r.subId}>
-                              <div className="sub-row-top">
-                                <span className="sub-name">{r.name}</span>
-                                <span className="sub-amount-pct"><b>{formatYen(r.value)}</b> ・ {r.pct}%</span>
-                              </div>
+                              <div className="sub-name">{r.name}</div>
                               <div className="sub-bar-track"><span className="sub-bar-fill" style={{ width: r.pct + '%', background: s.cat.color }}></span></div>
+                              <div className="sub-amount-pct"><b>{formatYen(r.value)}</b> ・ {r.pct}%</div>
                             </div>
                           ))}
                         </div>
@@ -583,11 +581,11 @@ function ReportsView({ monthYm, setMonthYm }) {
         <div className="bar-chart">
           {last6.map((m) => (
             <button type="button" key={m.ym} className={cx('bar-col', selectedTrendYm === m.ym && 'selected')} onClick={() => setSelectedTrendYm(m.ym)}>
-              <div style={{ display: 'flex', gap: 3, alignItems: 'flex-end', height: '100%' }}>
-                <div className="bar-shape" style={{ height: '100%' }}>
+              <div className="bar-visual">
+                <div className="bar-shape">
                   <div className="fill-income" style={{ height: barHeightPct(m.inc) + '%' }}></div>
                 </div>
-                <div className="bar-shape" style={{ height: '100%' }}>
+                <div className="bar-shape">
                   <div className="fill-expense" style={{ height: barHeightPct(m.exp) + '%' }}></div>
                 </div>
               </div>

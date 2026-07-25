@@ -13,7 +13,7 @@
   --color-accent: #FFD23F;
   --color-income: #3FAE75;
   --color-income-bg: #E4F6EC;
-  --color-expense: #FF6B6B;
+  --color-expense: #E8483D;
   --color-expense-bg: #FFEBEB;
   --color-text: #4A3B2A;
   --color-text-muted: #97876F;
@@ -44,7 +44,7 @@
   --color-accent: #FFD23F;
   --color-income: #59C98C;
   --color-income-bg: #1E3227;
-  --color-expense: #FF8080;
+  --color-expense: #FF6B5E;
   --color-expense-bg: #3A2222;
   --color-text: #F5ECDD;
   --color-text-muted: #B7A794;
@@ -665,32 +665,32 @@ textarea.text-input { resize: none; min-height: 64px; }
 .legend-row.clickable:active { background: var(--color-surface-alt); }
 .legend-row.expanded { background: var(--color-surface-alt); }
 .legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
-.legend-name { flex: 1; min-width: 0; font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.legend-name { flex: 1; min-width: 0; font-weight: 700; overflow-wrap: break-word; }
 .legend-pct { flex-shrink: 0; color: var(--color-text-muted); font-variant-numeric: tabular-nums; }
 .legend-caret { flex-shrink: 0; color: var(--color-text-faint); font-size: 10px; }
 
-.sub-breakdown { padding: 2px 4px 10px 22px; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.sub-breakdown { padding: 2px 4px 10px 22px; display: flex; flex-direction: column; gap: 12px; min-width: 0; }
 .sub-breakdown-empty { padding: 4px 4px 10px 22px; font-size: 12px; color: var(--color-text-muted); }
 .sub-breakdown-row { min-width: 0; }
-.sub-breakdown-row .sub-row-top {
-  display: flex; justify-content: space-between; align-items: baseline; gap: 8px;
-  font-size: 11.5px; margin-bottom: 5px;
-}
 .sub-breakdown-row .sub-name {
-  color: var(--color-text-muted); font-weight: 700; min-width: 0;
-  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  color: var(--color-text); font-weight: 700; font-size: 12.5px;
+  overflow-wrap: break-word; margin-bottom: 5px;
 }
-.sub-breakdown-row .sub-amount-pct { flex-shrink: 0; color: var(--color-text-muted); font-variant-numeric: tabular-nums; }
+.sub-breakdown-row .sub-amount-pct {
+  display: block; margin-top: 5px; font-size: 11.5px;
+  color: var(--color-text-muted); font-variant-numeric: tabular-nums;
+}
 .sub-breakdown-row .sub-amount-pct b { color: var(--color-text); font-weight: 800; }
-.sub-bar-track { height: 6px; border-radius: var(--radius-pill); background: var(--color-border); overflow: hidden; }
+.sub-bar-track { height: 7px; border-radius: var(--radius-pill); background: var(--color-border); overflow: hidden; }
 .sub-bar-fill { display: block; height: 100%; border-radius: var(--radius-pill); }
 
-.bar-chart { display: flex; align-items: flex-end; gap: 8px; height: 150px; padding-top: 10px; }
-.bar-chart .bar-col { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; gap: 4px; border: none; background: none; padding: 0; border-radius: var(--radius-sm); }
+.bar-chart { display: flex; align-items: stretch; gap: 8px; height: 150px; padding-top: 10px; }
+.bar-chart .bar-col { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: 4px; border: none; background: none; padding: 0; border-radius: var(--radius-sm); min-width: 0; }
 .bar-chart .bar-col.selected { background: var(--color-surface-alt); }
-.bar-chart .bar-shape { width: 100%; max-width: 22px; border-radius: 6px 6px 2px 2px; background: var(--color-primary-light); position: relative; }
-.bar-chart .bar-shape .fill-expense { position: absolute; bottom: 0; left: 0; right: 0; background: var(--color-expense); border-radius: 6px 6px 2px 2px; }
-.bar-chart .bar-shape .fill-income { position: absolute; bottom: 0; left: 0; right: 0; background: var(--color-income); border-radius: 6px 6px 2px 2px; }
+.bar-visual { flex: 1; width: 100%; min-height: 0; display: flex; gap: 3px; align-items: flex-end; justify-content: center; }
+.bar-chart .bar-shape { width: 100%; max-width: 22px; height: 100%; border-radius: 6px 6px 2px 2px; background: var(--color-border); position: relative; overflow: hidden; }
+.bar-chart .bar-shape .fill-expense { position: absolute; bottom: 0; left: 0; right: 0; background: var(--color-expense); }
+.bar-chart .bar-shape .fill-income { position: absolute; bottom: 0; left: 0; right: 0; background: var(--color-income); }
 .bar-chart .bar-label { font-size: 10.5px; color: var(--color-text-muted); font-weight: 700; }
 .trend-detail { text-align: center; font-size: 12.5px; font-weight: 700; color: var(--color-text-muted); margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--color-border); }
 .trend-detail b { color: var(--color-text); }
