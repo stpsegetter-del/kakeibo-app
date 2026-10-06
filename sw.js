@@ -6,7 +6,7 @@
  * ★アプリを更新して公開し直したときは CACHE_VERSION の数字を1つ上げてください。
  *   上げないと、利用者の端末に古いキャッシュが残り続けて更新が反映されないことがあります。
  */
-const CACHE_VERSION = 'v1';
+const CACHE_VERSION = 'v2';
 const CACHE_NAME = 'kakeibo-cache-' + CACHE_VERSION;
 
 const APP_SHELL = [

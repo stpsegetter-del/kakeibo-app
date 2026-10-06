@@ -539,7 +539,7 @@ function ReportsView({ monthYm, setMonthYm }) {
           <div className="donut-wrap">
             <DonutChart segments={expenseByCategory.map((s) => ({ value: s.value, color: s.cat.color }))} size={112} thickness={18} />
             <div className="donut-legend">
-              {expenseByCategory.slice(0, 6).map((s) => {
+              {expenseByCategory.map((s) => {
                 const isOpen = expandedCategoryId === s.cat.id;
                 return (
                   <React.Fragment key={s.cat.id}>
